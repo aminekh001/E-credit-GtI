@@ -1,0 +1,33 @@
+  server:
+    port: 8093
+
+  spring:
+    servlet:
+      multipart:
+        enabled: true
+        max-file-size: 4MB
+    datasource:
+      driver-class-name: org.postgresql.Driver
+      url: jdbc:postgresql://localhost:5432/demande
+      username: postgres
+      password: root
+    jpa:
+      hibernate:
+        ddl-auto: create
+      database: postgresql
+      database-platform: org.hibernate.dialect.PostgreSQLDialect
+      show-sql: true
+    kafka:
+      producer:
+        bootstrap-servers: localhost:9092
+        key-serializer: org.apache.kafka.common.serialization.StringSerializer
+        value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+        properties:
+          spring.json.type.mapping: demandeConfirmation:com.gti_e_credit.demande_service.kafka.DemandeConfirmation
+  application:
+    config:
+      user-url: http://localhost:8090/api/v1/user
+      credit-url: http://localhost:8091/api/v1/credit
+# \bin\windows\zookeeper-server-start.bat
+#.\bin\windows\kafka-server-start.bat .\config\server.properties
+#jps

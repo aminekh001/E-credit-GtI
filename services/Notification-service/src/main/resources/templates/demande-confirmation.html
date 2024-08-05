@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Loan Request Details</title>
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f2f2f2;
+            border: 1px solid #ccc;
+        }
+        .details {
+            margin-bottom: 20px;
+        }
+        .label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Loan Request Details</h2>
+
+    <div class="details">
+        <span class="label">Customer Name:</span> <span th:text="${customerName}"></span>
+    </div>
+
+    <div class="details">
+        <span class="label">Amount to Repay:</span> <span th:text="${montantARembourser}"></span>
+    </div>
+
+    <div class="details">
+        <span class="label">Number of Installments:</span> <span th:text="${nbrDechenance}"></span>
+    </div>
+
+    <div class="details">
+        <span class="label">Request Date:</span> <span th:text="${dateDemande}"></span>
+    </div>
+
+</div>
+</body>
+</html>
