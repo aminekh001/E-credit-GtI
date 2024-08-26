@@ -13,3 +13,24 @@
       database: postgresql
       database-platform: org.hibernate.dialect.PostgreSQLDialect
       show-sql: true
+    web:
+      cors:
+        allowed-origins: "http://localhost:4200"
+        allowed-methods: "*"
+        allowed-headers: "*"
+        allow-credentials: true
+    kafka:
+      producer:
+        bootstrap-servers: localhost:9092
+        key-serializer: org.apache.kafka.common.serialization.StringSerializer
+        value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+        properties:
+          spring.json.type.mapping: activationConfirmation:com.gti_e_credit.authUser.kafka.ActivationConfirmation
+  application:
+    name: authUser
+    security:
+      jwt:
+        secret-key: "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970"
+        expiration: "86400000" # a day
+        refresh-token:
+          expiration:

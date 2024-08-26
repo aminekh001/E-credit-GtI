@@ -1,0 +1,133 @@
+<div class="font-[sans-serif]">
+    <div class="flex flex-col items-center justify-center py-5">
+      <div class="grid lg:grid-cols-2 items-center gap-8 max-w-7xl w-full">
+        <div class="border-orange-400 rounded-lg p-6 max-w-xl shadow-[0_2px_22px_-4px_rgba(93,96,127,0.2)] max-md:mx-auto">
+          <form class="space-y-5" (ngSubmit)="register()" #registrationForm="ngForm">
+            <div class="mb-8">
+              <h3 class="bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-yellow-100 text-3xl font-extrabold">Créer un compte</h3>
+              <p class="text-gray-500 text-sm mt-4 leading-relaxed">Accès sécurisé à votre espace personnel</p>
+              
+              <div *ngIf="errorMsg.length">
+                <p *ngFor="let msg of errorMsg" class="text-red-600">{{msg}}</p>
+              </div>
+            </div>
+  
+            <div class="flex -mx-3">
+              <div class="w-1/2 px-3 mb-5">
+                <label for="lastname" class="text-xs font-semibold px-1">Nom</label>
+                <div class="flex">
+                  <div class="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center"><i class="mdi mdi-account-outline text-gray-400 text-lg"></i></div>
+                  <input [(ngModel)]="registerRequest.lastname" name="lastname" type="text" class="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" placeholder="Nom" id="lastname" required>
+                </div>
+              </div>
+              <div class="w-1-2 px-3 mb-5">
+                <label for="firstname" class="text-xs font-semibold px-1">Prénom</label>
+                <div class="flex">
+                  <div class="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center"><i class="mdi mdi-account-outline text-gray-400 text-lg"></i></div>
+                  <input [(ngModel)]="registerRequest.firstname" name="firstname" type="text" class="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" placeholder="Prénom" id="firstname" required>
+                </div>
+              </div>
+            </div>
+  
+            <div class="flex -mx-3">
+              <div class="w-1/2 px-3 mb-5">
+                <label for="email" class="text-xs font-semibold px-1">E-mail</label>
+                <div class="flex">
+                  <div class="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center"><i class="mdi mdi-email-outline text-gray-400 text-lg"></i></div>
+                  <input [(ngModel)]="registerRequest.email" name="email" type="email" class="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" placeholder="nom@exp.com" id="email" required>
+                </div>
+              </div>
+              <div class="w-1/2 px-3 mb-5">
+                <label for="phone" class="text-xs font-semibold px-1">Téléphone</label>
+                <div class="flex">
+                  <div class="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center"><i class="mdi mdi-phone-outline text-gray-400 text-lg"></i></div>
+                  <input [(ngModel)]="registerRequest.phone" name="phone" type="tel" class="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" placeholder="exp: +216 99 999 999" id="phone" required>
+                </div>
+              </div>
+            </div>
+  
+            <div class="flex -mx-3">
+              <div class="w-1/2 px-3 mb-5">
+                <label for="userCin" class="text-xs font-semibold px-1">CIN</label>
+                <div class="flex">
+                  <div class="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center"><i class="mdi mdi-card-account-details-outline text-gray-400 text-lg"></i></div>
+                  <input [(ngModel)]="registerRequest.userCin" name="userCin" type="text" class="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" placeholder="exp: 01 999 999" id="userCin" required>
+                </div>
+              </div>
+              <div class="w-1/2 px-3 mb-5">
+                <label for="bankAccounts" class="text-xs font-semibold px-1">RIB</label>
+                <div class="flex">
+                  <div class="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center"><i class="mdi mdi-bank-outline text-gray-400 text-lg"></i></div>
+                  <input [(ngModel)]="registerRequest.bankAccounts" name="bankAccounts" type="text" class="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" placeholder="20 chiffres" id="bankAccounts" required>
+                </div>
+              </div>
+            </div>
+  
+            <div class="flex -mx-3">
+              <div class="w-1/2 px-3 mb-5">
+                <label for="family-situation-select" class="text-xs font-semibold px-1">Situation familiale</label>
+                <div class="flex">
+                  <div class="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center"><i class="mdi mdi-account-group-outline text-gray-400 text-lg"></i></div>
+                  <select [(ngModel)]="registerRequest.familySituation" name="familySituation" class="w-full -ml-10 pl-10 pr-3 py-3 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" id="family-situation-select" required>
+                    <option value="">--sélection--</option>
+                    <option value="marié sans enfant">marié sans enfant</option>
+                    <option value="marié avec enfant(s)">marié avec enfant(s)</option>
+                    <option value="divorcé">divorcé</option>
+                    <option value="célibataire">célibataire</option>
+                  </select>
+                </div>
+              </div>
+              <div class="w-1/2 px-3 mb-5">
+                <label for="dateOfBirth" class="text-xs font-semibold px-1">Date de naissance</label>
+                <div class="flex">
+                  <div class="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center"><i class="mdi mdi-calendar-outline text-gray-400 text-lg"></i></div>
+                  <input [(ngModel)]="registerRequest.dateOfBirth" name="dateOfBirth" type="date" class="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" id="dateOfBirth" min="1941-01-01" max="2006-12-31" required>
+                </div>
+              </div>
+            </div>
+  
+            <div class="flex -mx-3">
+              <div class="w-1/2 px-3 mb-5">
+                <label for="password" class="text-xs font-semibold px-1">Mot de passe</label>
+                <div class="flex">
+                  <div class="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center"><i class="mdi mdi-lock-outline text-gray-400 text-lg"></i></div>
+                  <input [(ngModel)]="registerRequest.password" name="password" type="password" class="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" placeholder="********" id="password" required>
+                </div>
+              </div>
+              <div class="w-1/2 px-3 mb-5">
+                <label for="confirmPassword" class="text-xs font-semibold px-1">Confirmez votre Mot de passe</label>
+                <div class="flex">
+                  <div class="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center"><i class="mdi mdi-lock-outline text-gray-400 text-lg"></i></div>
+                  <input [(ngModel)]="confirmPassword" name="confirmPassword" type="password" class="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500" placeholder="********" id="confirmPassword" required>
+                </div>
+              </div>
+            </div>
+  
+            <div class="flex flex-wrap items-center justify-between gap-1">
+              <div class="flex items-center">
+                <input id="termsAccepted" name="termsAccepted" type="checkbox" [(ngModel)]="termsAccepted" class="h-4 w-4 shrink-0 text-blue-900 focus:ring-blue-900 border-gray-300 rounded" required>
+                <label for="termsAccepted" class="ml-3 block text-sm text-gray-800">
+                  J'accepte
+                </label>
+              </div>
+              <div class="text-sm">
+                <a href="javascript:void(0);" class="text-orange-600 hover:underline font-semibold">
+                  les Mentions légales relatives à la protection des données personnelles
+                </a>
+              </div>
+            </div>
+  
+            <div class="!mt-8">
+              <button type="submit" [disabled]="!registrationForm.form.valid || !termsAccepted || registerRequest.password !== confirmPassword" class="w-full shadow-xl py-3 px-4 text-lg text-white tracking-wide rounded-full bg-orange-600 hover:bg-red-600 focus:outline-none disabled:bg-gray-400 disabled:cursor-not-allowed">
+                Continuer
+              </button>
+            </div>
+          </form>
+        </div>
+        
+        <div class="lg:h-[mb-500] md:h-[mb-900px] max-md:mt-8">
+          <img src="https://img.freepik.com/free-vector/sign-up-concept-illustration_114360-7865.jpg?t=st=1723030015~exp=1723033615~hmac=28ac48871d1fcd0854f6909adfad218013de58f5ea348538de7e0884d6bd9947&w=740" class="w-full h-full max-md:w-4/5 mx-auto block object-cover" alt="Dining Experience" />
+        </div>
+      </div>
+    </div>
+  </div>

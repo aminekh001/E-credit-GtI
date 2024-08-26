@@ -1,6 +1,7 @@
 package com.gti_e_credit.authUser.authentication;
-import com.gti_e_credit.authUser.bankAccounts.BankAccounts;
-import com.gti_e_credit.authUser.bankAccounts.BankAccountsRepo;
+
+import com.gti_e_credit.authUser.kafka.ActivationConfirmation;
+import com.gti_e_credit.authUser.kafka.AuthProducer;
 import com.gti_e_credit.authUser.roleuser.RoleUser;
 import com.gti_e_credit.authUser.roleuser.RoleUserRepo;
 import com.gti_e_credit.authUser.security.JwtService;
@@ -8,7 +9,7 @@ import com.gti_e_credit.authUser.userBank.User;
 import com.gti_e_credit.authUser.userBank.UserCode;
 import com.gti_e_credit.authUser.userBank.UserCodeRepo;
 import com.gti_e_credit.authUser.userBank.UserRepo;
-import jakarta.ws.rs.InternalServerErrorException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +19,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 
 @Slf4j
@@ -34,17 +35,21 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private  final UserCodeRepo userCodeRepo;
     private final JwtService jwtService;
-    private final BankAccountsRepo bankAccountsRepo;
+
+
+    private final AuthProducer authProducer;
 
     @Autowired
-    public AuthenticationService(BankAccountsRepo bankAccountsRepo, RoleUserRepo roleUserRepo, PasswordEncoder passwordEncoder, UserRepo userRepo, AuthenticationManager authenticationManager, UserCodeRepo userCodeRepo, JwtService jwtService) {
+    public AuthenticationService( RoleUserRepo roleUserRepo, PasswordEncoder passwordEncoder, UserRepo userRepo, AuthenticationManager authenticationManager, UserCodeRepo userCodeRepo, JwtService jwtService, AuthProducer authProducer) {
         this.roleUserRepo = roleUserRepo;
         this.passwordEncoder = passwordEncoder;
         this.userRepo = userRepo;
         this.authenticationManager = authenticationManager;
         this.userCodeRepo = userCodeRepo;
-        this.bankAccountsRepo= bankAccountsRepo;
+
         this.jwtService = jwtService;
+
+        this.authProducer = authProducer;
     }
 
 
@@ -55,14 +60,8 @@ public class AuthenticationService {
 
         boolean accountTest = request.getBankAccounts().isEmpty();
 
-        if (!accountTest){
-            List<BankAccounts> bankAccounts1;
-            bankAccounts1 = bankAccountsRepo.findByAccountNumberIn(request.getBankAccounts());
-            if (bankAccounts1==null){
-                String message;
-                return   message = "account number not found";
-            }
-        }
+
+
 
 
 
@@ -71,6 +70,7 @@ public class AuthenticationService {
                 .lastname(request.getLastname())
                 .email(request.getEmail())
                 .dateOfBirth(request.getDateOfBirth())
+                .familySituation(request.getFamilySituation())
                 .userCin(request.getUserCin())
                 .bankAccountsList(request.getBankAccounts())
                 .phone(request.getPhone())
@@ -80,13 +80,23 @@ public class AuthenticationService {
                 .roles(List.of(userRole))
                 .build();
         userRepo.save(user);
+        var userCode = generateAndSaveToken(user);
+        authProducer.sendAuthConfirmation(
+                new ActivationConfirmation(
+                        request.getEmail(),
+                        request.getFirstname(),
+                        userCode,
+                        user.getId()
 
+
+                )
+        );
        // sendvalidationCode(user);
         return null;
     }
 
 
-    private String generateAndSaveToken(User user){
+    private String  generateAndSaveToken(User user){
       // generate code auto
       var  generatedToken = generateActivationCode(6);
         var  token= UserCode.builder()
@@ -95,13 +105,31 @@ public class AuthenticationService {
                 .expiredAt(LocalDateTime.now().plusMinutes(15))
                 .user(user)
                 .build();
+
          userCodeRepo.save(token);
+        log.info(String.valueOf(token));
         return generatedToken;
     }
+    private String generateAndSaveLoginToken(User user){
+        var  generatedToken = generateActivationCode(6);
+        var optionalUserCodeObj = this.userCodeRepo.findByUserId(user.getId());
+        if (optionalUserCodeObj.isPresent()){
+            var userCode=optionalUserCodeObj.get();
+            userCode.setLoginToken(generatedToken);
+            this.userCodeRepo.save(userCode);
+            return generatedToken;
+        }else {
 
+            throw new EntityNotFoundException("User code not found for user ID: " + user.getId());
+
+        }
+
+
+
+    }
     private void sendvalidationCode(User user) {
         //send validation code to user 2-step auth  / validation
-        generateAndSaveToken(user);
+       var newToken = generateAndSaveToken(user);
     }
     private String generateActivationCode(int length) {
         String characters="0123456789";
@@ -115,30 +143,43 @@ public class AuthenticationService {
     }
 
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
-            log.info(request.getEmail());
-            Optional<User> sUser =userRepo.findByEmail(request.getEmail());
-            log.info(String.valueOf(sUser.isEmpty()));
-
+    public AuthenticationResponse authenticate(@NotNull AuthenticationRequest request) {
+        log.info(request.getEmail());
+        log.info(request.getPassword());
         var auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
                         request.getPassword()
                 )
         );
-          log.info((String) auth.getPrincipal());
+
+        log.info("auth maneger");
+
         var claims = new HashMap<String, Object>();
         var user = ((User) auth.getPrincipal());
         claims.put("fullName", user.getFullName());
-            log.info(String.valueOf(claims));
-        var jwtToken = jwtService.generateToken(claims, (User)auth.getPrincipal() );
+
+        var jwtToken = jwtService.generateToken(claims, (User) auth.getPrincipal());
         log.info(jwtToken);
-         var sJwt = AuthenticationResponse.builder()
+
+       var loginToken=  generateAndSaveLoginToken(user);
+       log.info(loginToken +"code");
+        // sned code by email
+        authProducer.sendAuthConfirmation(
+               new ActivationConfirmation(
+                       request.getEmail(),
+                       user.fullName(),
+                       loginToken,
+                       user.getId())
+        );
+
+        var userRole = this.roleUserRepo.findRoleIdsByUserId(user.getId());
+        return AuthenticationResponse.builder()
                 .token(jwtToken)
+                .userId(user.getId())
+                .roles(userRole)
                 .build();
 
-            log.info(String.valueOf(sJwt));
-        return sJwt;
     }
 
 

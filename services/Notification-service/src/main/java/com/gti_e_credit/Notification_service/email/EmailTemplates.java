@@ -4,6 +4,7 @@ import lombok.Getter;
 
 public enum EmailTemplates {
     DEMANDE_CONFIRMATION("demande-confirmation.html","Demande confirmation"),
+    ACTIVATION_CONFIRMATION("activation-confirmation.html","Activation confirmation "),
     ;
     @Getter
             private final String template;

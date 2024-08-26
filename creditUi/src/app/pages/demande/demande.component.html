@@ -1,0 +1,245 @@
+<div class="h-full py-6 px-6">
+  <mat-stepper #stepper [linear]="isLinear">
+    <mat-step [formGroup]="firstFormGroup">
+      <form [formGroup]="firstFormGroup" class="relative">
+        <ng-template matStepLabel> Type de crédit</ng-template>
+        
+        <div class="h-full w-full">
+          <h3 class="mb-5 text-lg font-medium text-gray-900 dark:text-white">Choisissez votre type de crédit</h3>
+          <mat-radio-group formControlName="credit"  class="grid w-full gap-6 md:grid-cols-2 min-h-full items-center justify-center">
+
+
+            <mat-radio-button *ngFor="let credit of credits" [value]="credit.id" class="usage-option  ">
+              <div class="w-full  font-semibold block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"> {{credit.typeCredit}} </div>
+                <div class="border-2 rounded-md border-blue-100 ">
+                  <div class="credit-info">
+                    <h3 class="credit-description">{{ credit.description }}</h3>
+                    <div class="credit-details">
+                      <p class="detail-item">Le montant maximum: <strong>{{ credit.MaxMontant }}</strong></p>
+                      <p class="detail-item">Le nombre maximum de périodes de remboursement: <strong>{{ credit.maxNbrDecheance }}</strong></p>
+                    </div>
+                    
+                    <div class="documents-section">
+                      
+                      <div *ngFor="let doc of credit.documents" class="document-item">
+                        <h4>{{ doc.name }}</h4>
+                        <p>{{ doc.description }}</p>
+                        <p class="doc-status" *ngIf="doc.isRequired">Obligatoire</p>
+                        <p class="doc-status" *ngIf="!doc.isRequired">Non obligatoire</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              
+            </mat-radio-button>
+            
+            <!-- Add more options as needed -->
+          </mat-radio-group>
+        </div>
+        
+        <div class="mt-5">
+          <button mat-raised-button color="primary" (click)="onNext()" matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <mat-step [formGroup]="creditFormGroup">
+      <ng-template matStepLabel>Credit Calculator</ng-template>
+      <div class="credit-calculator">
+        <h2 class="text-2xl font-bold mb-4">Credit Calculator</h2>
+      
+        <mat-form-field class="w-full">
+          <mat-label>Montant du crédit</mat-label>
+          <input matInput type="number" formControlName="creditAmount" min="0" max="50000" placeholder="Enter credit amount">
+          <mat-error *ngIf="creditFormGroup.get('creditAmount')?.invalid">
+            Please enter a valid amount between 0 and 50,000
+          </mat-error>
+        </mat-form-field>
+      
+        <mat-form-field class="w-full">
+          <mat-label>Période de remboursement </mat-label>
+          <input matInput type="number" formControlName="monthlyNumber" min="1" max="120" placeholder="Enter number of months">
+          <mat-error *ngIf="creditFormGroup.get('monthlyNumber')?.invalid">
+            Please enter a valid number between 1 and 120
+          </mat-error>
+        </mat-form-field>
+      
+        <mat-form-field class="w-full">
+          <mat-label>Due Dates</mat-label>
+          <mat-select formControlName="dueDates">
+            <mat-option value="Mensuelle">mensuelle</mat-option>
+            <mat-option value="Trimestrielle">trimestrielle </mat-option>
+            <mat-option value="Semestrielle">Semestrielle</mat-option>
+          </mat-select>
+        </mat-form-field>
+      
+        <div *ngIf="repaymentAmount !== null" class="mt-4">
+          <h3 class="text-xl font-semibold">Repayment Details:</h3>
+          <p class="text-lg">Monthly Repayment: {{ repaymentAmount | currency:'TND ':'symbol' }}</p>
+        </div>
+      </div>
+  
+      <div class="mt-5">
+        <button mat-button matStepperPrevious>Back</button>
+        <button mat-raised-button color="primary" matStepperNext>Next</button>
+      </div>
+    </mat-step>
+
+    <mat-step>
+      <ng-template matStepLabel>Additional Information</ng-template>
+      <div class="font-sans">
+        <div class="flex flex-col items-center justify-center py-5">
+          <div class="grid lg:grid-cols-2 items-start gap-8 max-w-7xl w-full">
+            <div>
+              <!-- Guarantees section -->
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Guarantees
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <button mat-raised-button color="primary" (click)="addData()">Add New Guarantee</button>
+                <table mat-table [dataSource]="data" class="w-full mt-4">
+                  <ng-container matColumnDef="nature">
+                    <th mat-header-cell *matHeaderCellDef> Nature </th>
+                    <td mat-cell *matCellDef="let element"> {{element.nature}} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="type">
+                    <th mat-header-cell *matHeaderCellDef> Type </th>
+                    <td mat-cell *matCellDef="let element"> {{element.type}} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="valeur">
+                    <th mat-header-cell *matHeaderCellDef> Value </th>
+                    <td mat-cell *matCellDef="let element"> {{element.valeur}} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="devise">
+                    <th mat-header-cell *matHeaderCellDef> Currency </th>
+                    <td mat-cell *matCellDef="let element"> {{element.devise}} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef> Actions </th>
+                    <td mat-cell *matCellDef="let element; let i = index">
+                      <button mat-icon-button color="warn" (click)="deleteData(i)">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </td>
+                  </ng-container>
+                  <tr mat-header-row *matHeaderRowDef="['nature', 'type', 'valeur', 'devise', 'actions']"></tr>
+                  <tr mat-row *matRowDef="let row; columns: ['nature', 'type', 'valeur', 'devise', 'actions'];"></tr>
+                </table>
+              </mat-expansion-panel>
+              
+              <!-- Document upload section -->
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Document Upload
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <table mat-table [dataSource]="clientDocuments" class="w-full mt-4">
+                  <ng-container matColumnDef="docName">
+                    <th mat-header-cell *matHeaderCellDef> Document Name </th>
+                    <td mat-cell *matCellDef="let element"> {{element.docName}} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="typeDoc">
+                    <th mat-header-cell *matHeaderCellDef> Document Type </th>
+                    <td mat-cell *matCellDef="let element"> {{element.typeDoc}} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef> Actions </th>
+                    <td mat-cell *matCellDef="let element; let i = index">
+                      <input type="file" (change)="onFileSelected($event, i)" [id]="'fileInput' + i" [style.display]="element.file ? 'none' : 'inline'">
+                      <ng-container *ngIf="element.file">
+                        <button mat-icon-button color="primary" (click)="clearFile(i)" matTooltip="Clear file">
+                          <mat-icon>clear</mat-icon>
+                        </button>
+                        <button mat-icon-button color="warn" (click)="removeDocument(i)" matTooltip="Remove document">
+                          <mat-icon>delete</mat-icon>
+                        </button>
+                      </ng-container>
+                    </td>
+                  </ng-container>
+                  <tr mat-header-row *matHeaderRowDef="['docName', 'typeDoc', 'actions']"></tr>
+                  <tr mat-row *matRowDef="let row; columns: ['docName', 'typeDoc', 'actions'];"></tr>
+                </table>
+                <button mat-raised-button color="primary" (click)="uploadFiles()" [disabled]="!hasFilesToUpload()">Upload Files</button>
+              </mat-expansion-panel>
+
+              <!-- Observation section -->
+               <form [formGroup]="observationForm">
+              <mat-form-field class="w-full mt-4">
+                <mat-label>Observation</mat-label>
+                <textarea matInput formControlName="observation" ></textarea>
+              </mat-form-field>
+                </form>
+            </div>
+            
+            <!-- Client Information section -->
+            <mat-card class="p-6">
+              <mat-card-title>Client Information</mat-card-title>
+              <mat-card-content>
+                <form [formGroup]="clientInfoForm" class="space-y-4">
+                  <mat-form-field>
+                    <mat-label>Select Account</mat-label>
+                    <mat-select formControlName="compte">
+                      <mat-option *ngFor="let bankAccount of UserCompte" [value]="bankAccount">
+                        {{ bankAccount }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <mat-form-field class="w-full">
+                    <mat-label>Entrée en relation le </mat-label>
+                    <input matInput [matDatepicker]="picker" formControlName="EntreeEnRelation">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                  </mat-form-field>
+                  <mat-form-field class="w-full">
+                    <mat-label>Par</mat-label>
+                    <input matInput formControlName="par" >
+                  </mat-form-field>
+                  <!-- Add more form fields as needed -->
+                </form>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+      </div>
+    
+      <div class="mt-5">
+        <button mat-button matStepperPrevious>Back</button>
+        <button mat-raised-button color="primary" (click)="submitForm()">Submit</button>
+        <button mat-button (click)="stepper.reset()">Reset</button>
+      </div>
+    </mat-step>
+  </mat-stepper>
+</div>
+
+<!-- Popup for adding new guarantee -->
+<ng-template #guaranteeDialog>
+  <h2 mat-dialog-title>Add New Guarantee</h2>
+  <mat-dialog-content>
+    <form [formGroup]="guaranteeForm">
+      <mat-form-field class="w-full">
+        <mat-label>Nature</mat-label>
+        <input matInput formControlName="nature">
+      </mat-form-field>
+      <mat-form-field class="w-full">
+        <mat-label>Type</mat-label>
+        <input matInput formControlName="type">
+      </mat-form-field>
+      <mat-form-field class="w-full">
+        <mat-label>Value</mat-label>
+        <input matInput formControlName="valeur">
+      </mat-form-field>
+      <mat-form-field class="w-full">
+        <mat-label>Currency</mat-label>
+        <input matInput formControlName="devise">
+      </mat-form-field>
+    </form>
+   
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button (click)="closeGuaranteeDialog()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="addGuarantee()">Add</button>
+  </mat-dialog-actions>
+</ng-template>

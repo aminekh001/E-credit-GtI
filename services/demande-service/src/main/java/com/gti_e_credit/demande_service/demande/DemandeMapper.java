@@ -13,6 +13,7 @@ public class DemandeMapper {
                 .clientId(request.clientId())
                 .creditId(request.creditId())
                 .dateDemande(LocalDate.now())
+                .numComtpe(request.numCompte())
                 .status("en cours")
                 .montant(request.montant())
                 .montantARembourser(request.montantARembourser())

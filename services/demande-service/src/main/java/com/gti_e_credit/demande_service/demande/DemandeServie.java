@@ -6,18 +6,25 @@ import com.gti_e_credit.demande_service.documents.ClientDocumentsRepo;
 import com.gti_e_credit.demande_service.garanties.GarantiesRepo;
 import com.gti_e_credit.demande_service.kafka.DemandeConfirmation;
 import com.gti_e_credit.demande_service.kafka.DemandeProducer;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 @Service
@@ -38,7 +45,7 @@ public class DemandeServie {
 
     @Transactional
 
-    public Integer createDemande(DemandeRequest request , List<MultipartFile> files)throws IOException {
+    public Integer createDemande(@RequestParam("request") DemandeRequest request , @RequestPart("files") List<MultipartFile> files)throws IOException {
         //fetch user
         try {
             var user = this.userClient.findUserById(request.clientId())
@@ -116,13 +123,30 @@ public class DemandeServie {
         return this.repo.getDemandeById(id);
     }
 
-    public List<Demande> getAll(){
-        return this.repo.findAll();
+    public List<EnrichedDemande> getAll() {
+        List<Demande> clientsDemandes = this.repo.findAll();
+
+        // Create a list of EnrichedDemande objects
+        List<EnrichedDemande> enrichedDemandes = clientsDemandes.stream().map(dm -> {
+            var userOpt = this.userClient.findUserById(dm.getClientId());
+
+            // Handle the Optional<UserResponse>
+            var userName = userOpt.map(user -> user.firstname() + " " + user.lastname())
+                    .orElse("Unknown User");
+
+            var typeCredit = this.creditClient.ClientCredit(dm.getCreditId()); // Assuming this returns an object that has a method typeCredit()
+            return new EnrichedDemande(dm, userName, typeCredit.typeCredit());
+        }).collect(Collectors.toList());
+
+        return enrichedDemandes;
     }
 
 
 
-    public List<Demande> getAllDemandeByClientId(Integer id){
+
+
+
+    public List<Demande> getDemandeByClientId(Integer id){
         return this.repo.findAllByClientId(id);
     }
 
@@ -130,4 +154,40 @@ public class DemandeServie {
     public void update(Demande demande){
          this.repo.save(demande);
     }
-}
+
+    public void updateById(Integer id) {
+        // Find the existing entity
+        Optional<Demande> existingDemande = repo.findById(id);
+
+        if (existingDemande.isPresent()) {
+            Demande updatedDemande = existingDemande.get();
+
+            // Update the field
+
+            updatedDemande.setStatus("Validé");
+
+            // Save the updated entity
+            repo.save(updatedDemande);
+        } else {
+            throw new EntityNotFoundException("Demande with ID " + id + " not found.");
+        }
+    }
+    public void updateRejete(Integer id) {
+        // Find the existing entity
+        Optional<Demande> existingDemande = repo.findById(id);
+
+        if (existingDemande.isPresent()) {
+            Demande updatedDemande = existingDemande.get();
+
+            // Update the field
+
+            updatedDemande.setStatus("Rejeté");
+
+            // Save the updated entity
+            repo.save(updatedDemande);
+        } else {
+            throw new EntityNotFoundException("Demande with ID " + id + " not found.");
+        }
+    }
+ }
+

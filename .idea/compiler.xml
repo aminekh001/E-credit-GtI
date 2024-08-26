@@ -13,7 +13,6 @@
         <module name="Discovery" />
         <module name="api_gateway" />
         <module name="authUser" />
-        <module name="user" />
         <module name="demande-service" />
       </profile>
     </annotationProcessing>

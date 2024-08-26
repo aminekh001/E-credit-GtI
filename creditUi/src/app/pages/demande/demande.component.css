@@ -1,0 +1,108 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* PrimeNG Styles */
+::ng-deep .mat-step-header {
+    pointer-events: none;
+  }
+
+
+  
+  .popup {
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .popup-content {
+    background-color: #fefefe;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .credit-info {
+    max-width: 200px; /* Reduced max width */
+    margin: 0px auto; /* Reduced margin */
+    padding: 0px; /* Reduced padding */
+    background-color: #f4f4f4; /* Lighter background color */
+    border-radius: 6px; /* Slightly smaller border radius */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Smaller shadow */
+  }
+  
+  .credit-description {
+    text-align: center;
+    color: #333;
+    font-size: 9px; /* Smaller font size */
+  }
+  
+  .credit-details {
+    margin-top: 5px; /* Reduced margin */
+  }
+  
+  .detail-item {
+    font-size: 15px; /* Smaller font size */
+    margin-bottom: 0px;
+    font:bold; /* Reduced margin */
+    color: #555;
+  }
+  
+  .documents-section {
+    margin-top: 20px; /* Reduced margin */
+  }
+  
+  .documents-section h4 {
+    font-size: 18px; /* Smaller font size for headings */
+    color: #007bff;
+    border-bottom: 1px solid #007bff; /* Smaller border */
+    padding-bottom: 3px; /* Reduced padding */
+  }
+  
+  .document-item {
+    margin-bottom: 15px; /* Reduced margin */
+    padding: 8px; /* Reduced padding */
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Smaller shadow */
+  }
+  
+  .doc-name {
+    font-size: 16px; /* Smaller font size */
+    margin: 0; /* No margin */
+    color: #333;
+  }
+  
+  .doc-description {
+    font-size: 14px; /* Smaller font size */
+    margin: 5px 0; /* Reduced margins */
+    color: #666;
+  }
+  
+  .doc-status {
+    font-weight: bold;
+    font-size: 12px; /* Smaller font size */
+  }
+  
+  .doc-status:nth-of-type(1) {
+    color: #28a745; /* Green for "Obligatoire" */
+  }
+  
+  .doc-status:nth-of-type(2) {
+    color: #dc3545; /* Red for "Non obligatoire" */
+  }
+  

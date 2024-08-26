@@ -13,6 +13,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
+import static com.gti_e_credit.Notification_service.email.EmailTemplates.ACTIVATION_CONFIRMATION;
 import static com.gti_e_credit.Notification_service.email.EmailTemplates.DEMANDE_CONFIRMATION;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -67,5 +68,39 @@ public class EmailService {
             log.warn("WARNING - Cannot send Email to {} ", destinationEmail);
         }
 
+    }
+
+
+    @Async
+    public void sendActivationMail(
+            String destinationEmail,
+            String tokenCode,
+            String name
+    ) throws MessagingException {
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper messageHelper= new MimeMessageHelper(mimeMessage,MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, UTF_8.name());
+        messageHelper.setFrom("amine.khairi88@gmail.com");
+        final String templateName = ACTIVATION_CONFIRMATION.getTemplate();
+        Map<String,Object> variables = new HashMap<>();
+        variables.put("customerName",name);
+        variables.put("tokenCode",tokenCode);
+
+        Context context =  new Context();
+        context.setVariables(variables);
+        messageHelper.setSubject(ACTIVATION_CONFIRMATION.getSubject());
+
+
+        try{
+            String htmlTemplate = templateEngine.process(templateName, context);
+            messageHelper.setText(htmlTemplate,true);
+
+            messageHelper.setTo(destinationEmail);
+            mailSender.send(mimeMessage);
+            log.info(String.format("INFO - Email successfully sent to %s with template %s ", destinationEmail, templateName));
+
+
+        }catch (MessagingException e){
+            log.warn("WARNING - Cannot send Email to {} ", destinationEmail);
+        }
     }
 }

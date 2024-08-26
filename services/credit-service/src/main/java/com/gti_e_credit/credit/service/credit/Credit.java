@@ -1,5 +1,6 @@
 package com.gti_e_credit.credit.service.credit;
 import com.gti_e_credit.credit.service.document.Documents;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,6 +25,8 @@ public class Credit {
     @OneToMany(mappedBy = "credit")
     private List<Documents> documents;
     private BigInteger MaxMontant;
+
+    private float interestRate;
     private Integer maxNbrDecheance;
 
 }

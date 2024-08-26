@@ -1,6 +1,7 @@
 package com.gti_e_credit.Notification_service.notification;
 
 
+import com.gti_e_credit.Notification_service.kafka.ActivationConfirmation;
 import com.gti_e_credit.Notification_service.kafka.DemandeConfirmation;
 import com.gti_e_credit.Notification_service.kafka.LoginConfirmation;
 import lombok.*;
@@ -21,6 +22,7 @@ public class Notification {
     private NotificationType type;
     private LocalDateTime notificationDate;
     private LoginConfirmation loginConfirmation;
+    private ActivationConfirmation activationConfirmation;
     private DemandeConfirmation demandeConfirmation;
 
 

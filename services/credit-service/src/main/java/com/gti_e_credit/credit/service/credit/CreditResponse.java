@@ -9,6 +9,7 @@ import java.util.List;
 public record CreditResponse(
         Integer id,
         String typeCredit,
+        float interestRate,
         List<Documents> documents,
         BigInteger MaxMontant,
         Integer maxNbrDecheance

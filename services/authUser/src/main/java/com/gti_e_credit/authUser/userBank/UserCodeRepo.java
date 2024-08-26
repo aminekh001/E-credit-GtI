@@ -9,4 +9,11 @@ import java.util.Optional;
 @Repository
 public interface UserCodeRepo extends JpaRepository<UserCode,Integer> {
 Optional<UserCode> findByToken(String token);
+
+
+
+    Optional<UserCode> findByUserId(Long id);
+
+
+    Optional<UserCode>findByLoginTokenAndUserId(String LoginToken, Integer userid);
 }

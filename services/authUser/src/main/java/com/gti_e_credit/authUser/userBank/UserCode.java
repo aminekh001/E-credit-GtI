@@ -18,6 +18,8 @@ public class UserCode {
     @GeneratedValue
     private Integer id;
     private  String token;
+
+    private String loginToken;
     private LocalDateTime createdAt;
     private  LocalDateTime expiredAt;
     private LocalDateTime validatedAt;

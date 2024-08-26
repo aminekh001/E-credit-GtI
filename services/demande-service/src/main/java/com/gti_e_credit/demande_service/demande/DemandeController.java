@@ -25,7 +25,8 @@ public class DemandeController {
     @PostMapping("/create")
     public ResponseEntity<Integer> createDemande(
             @RequestParam("request") String requestJson,
-            @RequestParam("files") List<MultipartFile> files
+            @RequestPart("files") List<MultipartFile> files
+
     ) throws IOException {
 
         log.info("Received requestJson: {}", requestJson);
@@ -44,27 +45,35 @@ public class DemandeController {
         }
     }
 
-@GetMapping("find/{id}")
+@GetMapping("/find/{id}")
     public ResponseEntity<Demande> findById(Integer id){
-    return ResponseEntity.ok(service.getDemandeById(id));
+
+        return ResponseEntity.ok(service.getDemandeById(id));
 }
-@GetMapping("/find")
-    public ResponseEntity<List<Demande>> findAll() {
+@GetMapping("/find/all")
+    public ResponseEntity<List<EnrichedDemande>> findAll() {
     return ResponseEntity.ok(service.getAll()
             );
 }
 
 @GetMapping("/findByClient/{id}")
-    public ResponseEntity<List<Demande>> findByClient( Integer id){
-    return ResponseEntity.ok(service.getAllDemandeByClientId(id));
+    public ResponseEntity<List<Demande>> findByClient(@PathVariable Integer id){
+    return ResponseEntity.ok(service.getDemandeByClientId(id));
 }
 
 
-@PutMapping("/update")
-    public ResponseEntity<?> update(@RequestBody Demande demande){
-    service.update(demande);
-    return ResponseEntity.accepted().build();
-}
+    @PutMapping("/Valide/{id}")
+    public ResponseEntity<Void> updateValide(@PathVariable("id") Integer id) {
+        service.updateById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/Rejete/{id}")
+    public ResponseEntity<Void> updateRejete(@PathVariable("id") Integer id) {
+        service.updateRejete(id);
+        return ResponseEntity.noContent().build();
+    }
+
 
 
 

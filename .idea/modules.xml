@@ -10,7 +10,6 @@
       <module fileurl="file://$PROJECT_DIR$/services/config_server/config_server.iml" filepath="$PROJECT_DIR$/services/config_server/config_server.iml" />
       <module fileurl="file://$PROJECT_DIR$/services/credit-service/credit-service.iml" filepath="$PROJECT_DIR$/services/credit-service/credit-service.iml" />
       <module fileurl="file://$PROJECT_DIR$/services/demande-service/demande-service.iml" filepath="$PROJECT_DIR$/services/demande-service/demande-service.iml" />
-      <module fileurl="file://$PROJECT_DIR$/services/user/user.iml" filepath="$PROJECT_DIR$/services/user/user.iml" />
     </modules>
   </component>
 </project>

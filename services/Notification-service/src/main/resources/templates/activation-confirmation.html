@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Activation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .greeting {
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: #555;
+        }
+        .activation-code {
+            font-size: 42px;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 30px;
+            background-color: #f0f8ff;
+            padding: 20px;
+            border-radius: 8px;
+            letter-spacing: 3px;
+            display: inline-block;
+        }
+        .activation-link {
+            margin-top: 30px;
+        }
+        .activation-link a {
+            padding: 12px 25px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 25px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .activation-link a:hover {
+            background-color: #0056b3;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 20px;
+            }
+            p {
+                font-size: 14px;
+            }
+            .activation-code {
+                font-size: 36px;
+                padding: 15px;
+            }
+            .activation-link a {
+                font-size: 14px;
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Account Activation</h1>
+    <p class="greeting" th:text="'Bonjour monsieur / madame ' + ${tokenCode} + ','"></p>
+    <p>Veuillez utiliser le code d'activation suivant pour activer votre compte :</p>
+    <div class="activation-code"><span th:text="${customerName}"></span></div>
+
+</div>
+</body>
+</html>

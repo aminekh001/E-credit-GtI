@@ -2,6 +2,7 @@ package com.gti_e_credit.authUser.userBank;
 
 
 import com.gti_e_credit.authUser.roleuser.RoleUser;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -15,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.security.Principal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,10 +48,10 @@ public class User  implements UserDetails, Principal {
     private String phone;
     private boolean accountLocked;
     private boolean enabled;
-
+    @Nullable
     private List<String> bankAccountsList;
-   @ManyToMany(fetch = FetchType.EAGER)
-    private List<RoleUser>roles;
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<RoleUser>roles = new ArrayList<>();;
 
     @CreatedDate
     @Column(nullable = false,updatable = false)

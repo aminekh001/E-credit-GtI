@@ -12,6 +12,7 @@ public class CreditMapper {
         return Credit.builder()
                 .id(request.id())
                 .typeCredit(request.typeCredit())
+                .interestRate(request.interestRate())
                 .documents(request.documents())
                 .MaxMontant(request.MaxMontant())
                 .maxNbrDecheance(request.maxNbrDecheance())
@@ -25,7 +26,9 @@ public class CreditMapper {
         }
     return new CreditResponse(
             credit.getId(),
+
             credit.getTypeCredit(),
+            credit.getInterestRate(),
             credit.getDocuments(),
             credit.getMaxMontant(),
             credit.getMaxNbrDecheance()

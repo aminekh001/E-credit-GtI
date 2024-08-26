@@ -1,0 +1,46 @@
+<div class="font-[sans-serif]">
+  <div class="min-h-screen flex flex-col items-center justify-center py-6 px-4">
+    <div class="grid md:grid-cols-2 items-center gap-4 max-w-6xl w-full">
+      <div class="border border-orange-400 rounded-lg p-6 max-w-md shadow-[0_2px_22px_-4px_rgba(93,96,127,0.2)] max-md:mx-auto">
+        <form class="space-y-4">
+          <div class="mb-8">
+            <h3 class="bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-yellow-100 text-3xl font-extrabold">Code de sécurité</h3>
+            <p class="text-gray-500 text-sm mt-4 leading-relaxed">Un email de vérification a été envoyé à votre adresse. Veuillez consulter votre boîte de réception et votre dossier de spam pour trouver cet email</p>
+
+            <!-- Error message from backend -->
+            <div *ngIf="errorMsg.length > 0">
+              <p *ngFor="let msg of errorMsg" class="text-red-600">{{msg}}</p>
+            </div>
+          </div>
+
+          <div>
+            <label class="text-gray-800 text-sm mb-2 block">code</label>
+            <div class="relative flex items-center">
+              <input [(ngModel)]="code" name="code" type="text" required class="w-full text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-blue-900" placeholder="exp: 0123456" />
+              <svg xmlns="http://www.w3.org/2000/svg" fill="#bbb" stroke="#bbb" class="w-[18px] h-[18px] absolute right-4" viewBox="0 0 24 24">
+                <circle cx="10" cy="7" r="6"></circle>
+                <path d="M14 15H6a5 5 0 0 0-5 5 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 5 5 0 0 0-5-5zm8-4h-2.59l.3-.29a1 1 0 0 0-1.42-1.42l-2 2a1 1 0 0 0 0 1.42l2 2a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42l-.3-.29H22a1 1 0 0 0 0-2z"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center justify-between gap-4">
+            <div class="text-sm">
+              <a href="javascript:void(0);" class="text-orange-400 hover:underline font-semibold">
+                Renvoyer le code de vérification
+              </a>
+            </div>
+          </div>
+
+          <div class="!mt-8">
+            <button type="button" (click)="onSubmit()" class="w-full shadow-xl py-3 px-4 text-sm tracking-wide rounded-full text-white bg-blue-900 hover:bg-orange-600 focus:outline-none">
+              Se connecter
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="lg:h-[400px] md:h-[300px] max-md:mt-8">
+        <img src="https://readymadeui.com/login-image.webp" class="w-full h-full max-md:w-4/5 mx-auto block object-cover" alt="Dining Experience" />
+      </div>
+    </div>
+  </div>
+</div>

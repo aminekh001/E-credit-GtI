@@ -1,5 +1,5 @@
 package com.gti_e_credit.authUser.authentication;
-import com.gti_e_credit.authUser.bankAccounts.BankAccounts;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -27,6 +27,8 @@ public class RegisterRequest {
     @NotBlank(message = "CIN is mandatory")
     @Size(min = 8,message = "CIN should be 8 characters long minimum" )
     private String userCin;
+
+    private String familySituation;
 
     @NotEmpty(message = "Birth day is mandatory")
     @NotBlank(message = "Birth day is mandatory")

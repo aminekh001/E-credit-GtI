@@ -1,6 +1,7 @@
 package com.gti_e_credit.demande_service.garanties;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gti_e_credit.demande_service.demande.Demande;
 import jakarta.persistence.*;
 import lombok.*;
@@ -17,6 +18,7 @@ public class Garanties {
     private int id;
 
     @ManyToOne
+    @JsonIgnore
     private Demande demande;
 
     private String nature;

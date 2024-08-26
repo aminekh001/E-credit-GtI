@@ -1,0 +1,82 @@
+<div class="h-screen">
+    <div class="mat-elevation-z8 m-7">
+      <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
+        <!-- Define columns -->
+        <ng-container *ngFor="let column of columnsToDisplay">
+          <ng-container [matColumnDef]="column">
+            <th mat-header-cell *matHeaderCellDef> {{ column }} </th>
+            <td mat-cell *matCellDef="let element">
+              <!-- Default case for other columns -->
+              <ng-container *ngIf="column !== 'garanties'">
+                {{ element[column] || 'N/A' }}
+              </ng-container>
+            </td>
+          </ng-container>
+        </ng-container>
+  
+        <!-- Expand Column -->
+        <ng-container matColumnDef="expand">
+          <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-icon-button aria-label="expand row" (click)="expandedElement = expandedElement === element ? null : element; $event.stopPropagation()">
+              <mat-icon>{{ expandedElement === element ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+  
+        <!-- Expanded Content Column -->
+        <ng-container matColumnDef="expandedDetail">
+          <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplayWithExpand.length">
+            <div class="example-element-detail" [@detailExpand]="element === expandedElement ? 'expanded' : 'collapsed'">
+              <div class="example-element-description">
+                <!-- Demande info -->
+                <div class="bg-white max-w-2xl shadow overflow-hidden sm:rounded-lg">
+                  <div class="px-4 py-5 sm:px-6">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">
+                      Garanties
+                    </h3>
+                   
+                  </div>
+                  <div class="border-t border-gray-200">
+                    <dl>
+                      
+                      <!-- Display garanties details -->
+                      <div *ngIf="element.garanties.length > 0" class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium text-gray-500">
+                          Garanties
+                        </dt>
+                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                          <div *ngFor="let garantie of element.garanties">
+                            <p>Nature: {{ garantie.nature }}</p>
+                            <p>Type: {{ garantie.type }}</p>
+                            <p>Valeur: {{ garantie.valeur }}</p>
+                            <p>Devise: {{ garantie.devise }}</p>
+                          </div>
+                        </dd>
+                      </div>
+                    </dl>
+                  </div>
+                  <!-- Accept and Reject Buttons -->
+               
+                </div>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+  
+        <!-- Header and Rows -->
+        <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
+        <tr mat-row *matRowDef="let element; columns: columnsToDisplayWithExpand;"
+            class="example-element-row border border-orange-200"
+            [class.example-expanded-row]="expandedElement === element"
+            (click)="expandedElement = expandedElement === element ? null : element">
+        </tr>
+        <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+      </table>
+  
+      <!-- Paginator -->
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons aria-label="Select page of demandes">
+      </mat-paginator>
+    </div>
+  </div>
+  

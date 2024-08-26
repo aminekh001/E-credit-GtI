@@ -1,9 +1,13 @@
 package com.gti_e_credit.demande_service.documents;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.gti_e_credit.demande_service.demande.Demande;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
 
 @Getter
 @Setter
@@ -11,6 +15,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ClientDocuments {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,5 +27,7 @@ public class ClientDocuments {
     private String docName;
     private String typeDoc;
     private String docPath;
+
+
 
 }
